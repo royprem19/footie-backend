@@ -8,9 +8,19 @@ class User(AbstractUser):
         ('admin', 'Turf Manager'),
     )
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='player')
+    
+    # --- NEW: GAMIFICATION & PROFILE FIELDS ---
+    avatar = models.CharField(max_length=255, default='⚽')
+    bio = models.TextField(default='Ready to play!', blank=True)
+    position = models.CharField(max_length=50, default='Striker')
+    level = models.CharField(max_length=50, default='Intermediate')
+    
+    # Leaderboard Stats
+    caps = models.IntegerField(default=0) # Total matches played
+    title = models.CharField(max_length=50, default='Rookie')
 
     def __str__(self):
-        return f"{self.username} ({self.role})"
+        return f"{self.username} ({self.role} - {self.title})"
 
 # 2. Venues Table
 class Venue(models.Model):

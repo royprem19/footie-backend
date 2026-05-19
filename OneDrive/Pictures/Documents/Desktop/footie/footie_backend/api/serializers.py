@@ -1,15 +1,14 @@
-from .models import User, Venue, Match, PlayerBooking, Transaction, Squad, SquadMember
-from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import User, Venue, Match, PlayerBooking
-class UserSerializer(serializers.ModelSerializer):
-    # Create a custom field to count the user's tickets
-    matches_played = serializers.SerializerMethodField()
+from django.contrib.auth import get_user_model
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from .models import Venue, Match, PlayerBooking, Transaction, Squad, SquadMember
 
+User = get_user_model()
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        # Only expose safe, public data to the frontend (NO passwords!)
-        fields = ['id', 'username', 'matches_played', 'date_joined']
+        # THE FIX: Added all the new Gamification fields here!
+        fields = ['id', 'username', 'email', 'role', 'avatar', 'bio', 'position', 'level', 'caps', 'title']
 
     def get_matches_played(self, obj):
         # The Bulletproof Way: Instead of guessing the reverse link, 
@@ -76,11 +75,15 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
-        # Grab the default tokens
         data = super().validate(attrs)
         
-        # Attach our custom user data to the response!
         data['username'] = self.user.username
-        data['is_admin'] = self.user.is_staff # Django's built-in admin flag
+        data['role'] = self.user.role
+        data['avatar'] = self.user.avatar
+        data['title'] = self.user.title
+        data['caps'] = self.user.caps
+        data['position'] = self.user.position
+        data['level'] = self.user.level
+        data['bio'] = self.user.bio
         
         return data
