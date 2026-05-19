@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-a*m(xr%x-i)fkdmswgpv3cs(gz)(v6ww$#&*ttl=ll59m%)8l-
 DEBUG = True
 
 ALLOWED_HOSTS = ['footie-backend.onrender.com', 'localhost', '127.0.0.1']
-CORS_ALLOW_ALL_ORIGINS = True
+
 # Application definition
 
 INSTALLED_APPS = [
